@@ -2,12 +2,13 @@
 
 ## Welcome to Function App with Terraform tutorial
 
-The goal is to setup a Angular Application with the most automation and minimal costs
+The goal is to setup a Azure Frunction App with just Terraform
 
 ### Required software 
 
 * Azure CLI (verifed with 2.0.70 ARM)
 * Terraform (verfied with 0.12.6 ARM)
+* Git       (verfied with 2.20.1 ARM)
 
 #### Azure CLI credentials
 You need to be logged in with the Azure CLI and the subscription you want to deploy to needs to be set as the default.
