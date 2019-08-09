@@ -41,14 +41,15 @@ resource "azurerm_function_app" "example" {
   }
 
   provisioner "local-exec" {
-    command     = "git remote add azure https://\\${self.site_credential.0.username}:${self.site_credential.0.password}@${self.name}.scm.azurewebsites.net:443/${self.name}.git"
-    working_dir = ".." 
-  }
-  provisioner "local-exec" {
-    command     = "git push azure"
+    command     = "git remote remove azure"
+    when        = "destroy"
     working_dir = ".."
   }
 
+  provisioner "local-exec" {
+    command     = "git remote add azure https://\\${self.site_credential.0.username}:${self.site_credential.0.password}@${self.name}.scm.azurewebsites.net:443/${self.name}.git;git push azure"
+    working_dir = ".." 
+  }
 }
 
 resource "azurerm_application_insights" "example" {
