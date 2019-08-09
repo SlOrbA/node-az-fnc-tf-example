@@ -1,5 +1,7 @@
 resource "random_string" "example" {
-  length = "3"
+  length  = "3"
+  special = false
+  upper   = false
 }
 
 resource "azurerm_resource_group" "example" {
@@ -8,7 +10,7 @@ resource "azurerm_resource_group" "example" {
 }
 
 resource "azurerm_storage_account" "example" {
-  name                     = "nodeazfnctf${lower(random_string.example.result)}"
+  name                     = "nodeazfnctf${random_string.example.result}"
   location                 = "${azurerm_resource_group.example.location}"
   resource_group_name      = "${azurerm_resource_group.example.name}"
   account_tier             = "Standard"
@@ -33,6 +35,20 @@ resource "azurerm_function_app" "example" {
   resource_group_name        = "${azurerm_resource_group.example.name}"
   app_service_plan_id        = "${azurerm_app_service_plan.example.id}"
   storage_connection_string  = "${azurerm_storage_account.example.primary_connection_string}"
+
+  app_settings = {
+    APPINSIGHTS_INSTRUMENTATIONKEY = "${azurerm_application_insights.example.instrumentation_key}"
+  }
+
+  provisioner "local-exec" {
+    command     = "git remote add azure https://\\${self.site_credential.0.username}:${self.site_credential.0.password}@${self.name}.scm.azurewebsites.net:443/${self.name}.git"
+    working_dir = ".." 
+  }
+  provisioner "local-exec" {
+    command     = "git push azure"
+    working_dir = ".."
+  }
+
 }
 
 resource "azurerm_application_insights" "example" {
